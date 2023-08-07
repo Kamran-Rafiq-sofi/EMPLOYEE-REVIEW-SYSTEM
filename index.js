@@ -3,44 +3,47 @@ const expressLayouts=require('express-ejs-layouts')
 const path=require('path')
 // port on which app will run
 const port=8000;
+const db=require('./configs/mongoose')
 
 
 
 // Passport And Local Strategy
-const passpoet=require('passport')
-// const localStrategy=
+const passport=require('passport')
+const localStrategy=require('./configs/passport_local_strategy')
 const cookieParser=require('cookie-parser')
 const session=require('express-session')
-const MongoStore=require('mongodb');
+const MongoStore=require('connect-mongo');
 
 // usage
 const app=express();
 app.use(express.json());
-app.use(urlencoded({ extended:true}));
+app.use(express.urlencoded({ extended:true}));
 app.use(cookieParser());
 
 
 // session setup
-// app.use(session({
-//     name: 'ERS',
-//     secret: process.env.ERS_SESSION_SECRETE,
-//     saveUninitialized: false,
-//     resave: false,
-//     cookie: {
-//         maxAge: 1000 * 60 * 60 * 24,
-//     },
-//     store: MongoStore.create({
-//         mongoUrl: process.env.ERS_DB_URI,
-//         collectionName: 'session',
-//         autoRemove: 'native'
-//     })
-// }));
+app.use(session({
+    name: 'ERS',
+    secret: 'Review',
+    saveUninitialized: false,
+    resave: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+    },
+    store: MongoStore.create({
+        // mongoUrl: 'mongodb+srv://kamranrafiq805:kamranrafiqsofi@cluster0406.8ritmss.mongodb.net/EMPLOYEES_REVIEW_SYSTEM',
+        mongoUrl:'mongodb://127.0.0.1/EMPLOYEES_REVIEW_SYSTEM',
+        collectionName: 'session',
+        autoRemove: 'native'
+    })
+    
+}));
 
 
 // passport middlewares
-// app.use(passport.initialize());
-// app.use(passport.session());
-// app.use(passport.setAuthenticatedUser);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setAuthenticatedUser);
 
 
 // app.use(express.static(path.join(__dirname, 'public'))); // public | static file 
@@ -49,8 +52,10 @@ app.use(express.static(path.join(__dirname, 'assets'))); // public | static file
 
 
 // ejs setup
-// app.use(expressLayouts);
+
 app.use(expressLayouts);
+
+
 
 // individual css
 // app.set('layout extractStyles', true);
@@ -77,3 +82,4 @@ app.listen(port, (err) => {
         console.log(`server is up and running at port ${port}`);
     }
 })
+
