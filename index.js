@@ -43,8 +43,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24,
     },
     store: MongoStore.create({
-        // mongoUrl: 'mongodb+srv://kamranrafiq805:kamranrafiqsofi@cluster0406.8ritmss.mongodb.net/EMPLOYEES_REVIEW_SYSTEM',
-        // mongoUrl:'mongodb://127.0.0.1/EMPLOYEES_REVIEW_SYSTEM',
+        
         mongoUrl:`mongodb://127.0.0.1/${env.db}`,
 
         collectionName: 'session',
@@ -63,7 +62,7 @@ app.use(flash());
 app.use(customMware.setflash);
 
 
-// app.use(express.static(path.join(__dirname, 'public'))); // public | static file 
+
 
 // app.use(express.static(path.join(__dirname, 'assets'))); // public | static file 
 app.use(express.static(path.join(__dirname, env.asset_path))); // public | static file 
@@ -75,11 +74,7 @@ app.use(expressLayouts);
 
 
 
-// individual css
-// app.set('layout extractStyles', true);
-// individual js
 
-// app.set('layout extractScripts', true);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
