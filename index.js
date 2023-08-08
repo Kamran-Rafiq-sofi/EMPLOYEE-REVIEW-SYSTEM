@@ -5,6 +5,12 @@ const path=require('path')
 const port=8000;
 const db=require('./configs/mongoose')
 
+// flash and noty
+const flash=require('connect-flash');
+const noty=require('noty');
+const customMware = require('./configs/middleware');
+
+
 
 
 // Passport And Local Strategy
@@ -13,6 +19,10 @@ const localStrategy=require('./configs/passport_local_strategy')
 const cookieParser=require('cookie-parser')
 const session=require('express-session')
 const MongoStore=require('connect-mongo');
+
+// Environment variable
+const env=require('./configs/environment');
+
 
 // usage
 const app=express();
@@ -24,7 +34,9 @@ app.use(cookieParser());
 // session setup
 app.use(session({
     name: 'ERS',
-    secret: 'Review',
+    // secret: 'Review',
+    secret: env.session_cookie_key,
+
     saveUninitialized: false,
     resave: false,
     cookie: {
@@ -32,7 +44,9 @@ app.use(session({
     },
     store: MongoStore.create({
         // mongoUrl: 'mongodb+srv://kamranrafiq805:kamranrafiqsofi@cluster0406.8ritmss.mongodb.net/EMPLOYEES_REVIEW_SYSTEM',
-        mongoUrl:'mongodb://127.0.0.1/EMPLOYEES_REVIEW_SYSTEM',
+        // mongoUrl:'mongodb://127.0.0.1/EMPLOYEES_REVIEW_SYSTEM',
+        mongoUrl:`mongodb://127.0.0.1/${env.db}`,
+
         collectionName: 'session',
         autoRemove: 'native'
     })
@@ -44,11 +58,15 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
+// use flash
+app.use(flash());
+app.use(customMware.setflash);
 
 
 // app.use(express.static(path.join(__dirname, 'public'))); // public | static file 
 
-app.use(express.static(path.join(__dirname, 'assets'))); // public | static file 
+// app.use(express.static(path.join(__dirname, 'assets'))); // public | static file 
+app.use(express.static(path.join(__dirname, env.asset_path))); // public | static file 
 
 
 // ejs setup

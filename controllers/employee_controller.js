@@ -798,8 +798,8 @@ module.exports.createEmployee = async function (req, res) {
         // adding user entry inside company
         await Company.findByIdAndUpdate(existingCompany._id, { $push: { 'employees': user._id } });
 
-
         return res.status(200).json({
+            
             message: `successfully create employee and added into ${company} company`,
             status: 'successful',
             data: [{
@@ -919,13 +919,18 @@ module.exports.createCompany = async function (req, res) {
 
 
 // signout (logout) user by using logout method given by passportjs
-module.exports.signout = function (req, res) {
+module.exports.signout = function (req, res,next) {
     req.logout((err) => {
-        if (err)
+        if (err){
             console.log(err);
-    });
-    res.redirect('/signin');
+            return next(err);
+    }
+    req.flash('success',"logged out successfully")
+
+   return res.redirect('/signin');
+});
 }
+
 
 
 /**
@@ -963,6 +968,7 @@ module.exports.adminPanel = async function (req, res) {
  * the we have another check to check if user is admin or not if it is admin then add 'admin = true' to set the admin panel link in header
  */
 module.exports.employeeView = async function (req, res) {
+    
 
     await res.locals.user.populate({ path: 'company', select: 'name' });
     await res.locals.user.populate({ path: 'feedbackPending', select: 'name _id' })
@@ -973,7 +979,9 @@ module.exports.employeeView = async function (req, res) {
     }
 
     res.render('employee_view', { 'title': 'ERS | Employee view' })
-}
+    }
+    
+
 
 
 /**
@@ -1170,7 +1178,7 @@ module.exports.askFeedback = async function (req, res) {
 
         if (!receiverId || !giverId) {
             return res.status(404).json({
-                message: 'Empty field recieved',
+                message: 'Empty field received',
                 status: 'failure',
                 data: []
             });
@@ -1229,7 +1237,7 @@ module.exports.cancelFeedback = async function (req, res) {
 
         if (!receiverId || !giverId) {
             return res.status(404).json({
-                message: 'Empty field recieved',
+                message: 'Empty field received',
                 status: 'failure',
                 data: []
             });
@@ -1282,6 +1290,7 @@ module.exports.cancelFeedback = async function (req, res) {
  * calculate recievers rating and update 
  */
 module.exports.submitFeedback = async function (req, res) {
+
     try {
 
         const { receiverId, log } = req.body;
@@ -1338,7 +1347,9 @@ module.exports.submitFeedback = async function (req, res) {
             data: []
         });
 
-    } catch (error) {
+    } 
+
+    catch (error) {
         console.log('Error: submit feedback', error);
         res.status(500).json({
             message: 'Internal Server Error',
