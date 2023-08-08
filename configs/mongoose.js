@@ -1,11 +1,10 @@
 const mongoose=require('mongoose');
 const env=require('./environment');
-// const url='mongodb://127.0.0.1/EMPLOYEES_REVIEW_SYSTEM'
-// mongoose.connect(`mongodb://127.0.0.1/${env.db}`);
 
+// getting database
 const url=`mongodb://127.0.0.1/${env.db}`
 console.log(env.db);
-// const url='mongodb+srv://kamranrafiq805:kamranrafiqsofi@cluster0406.8ritmss.mongodb.net/EMPLOYEES_REVIEW_SYSTEM'
+
 mongoose.connect(url);
 const db=mongoose.connection;
 db.on('error',console.error.bind(console,'Error:Cannot connect to db::Mongodb'))
