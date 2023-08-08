@@ -44,7 +44,8 @@ app.use(session({
     },
     store: MongoStore.create({
         
-        mongoUrl:`mongodb://127.0.0.1/${env.db}`,
+        // mongoUrl:`mongodb://127.0.0.1/${env.db}`,
+        mongoUrl:`mongodb+srv://kamranrafiq805:kamranrafiqsofi@cluster0406.8ritmss.mongodb.net/${env.db}`,
 
         collectionName: 'session',
         autoRemove: 'native'
